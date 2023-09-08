@@ -31,10 +31,10 @@ function Form(props) {
       .required("User is required")
       .min(2, "name must be at least 2 characters"),
     size: yup.string(),
-    toppping1: yup.boolean(),
-    toppping2: yup.boolean(),
-    toppping3: yup.boolean(),
-    toppping4: yup.boolean(),
+    topping1: yup.boolean(),
+    topping2: yup.boolean(),
+    topping3: yup.boolean(),
+    topping4: yup.boolean(),
     special: yup.string(),
   });
 
@@ -124,14 +124,14 @@ function Form(props) {
           <input
             onChange={change}
             type="checkbox"
-            checked={form.toppping1}
+            checked={form.topping1}
             name="topping1"
           />
           Pepperoni
           <input
             onChange={change}
             type="checkbox"
-            checked={form.toppping2}
+            checked={form.topping2}
             name="topping2"
           />
           Sausage
@@ -145,7 +145,7 @@ function Form(props) {
           <input
             onChange={change}
             type="checkbox"
-            checked={form.toppping4}
+            checked={form.topping4}
             name="topping4"
           />
           Peppers
