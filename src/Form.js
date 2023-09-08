@@ -1,5 +1,6 @@
 // import { Link, Routes, Route } from "react-router-dom";
 import * as yup from "yup";
+import axios from "axios";
 import App from "./App";
 import React, { useState, useEffect } from "react";
 
@@ -7,10 +8,20 @@ function Form(props) {
   const [form, setForm] = useState({
     name: "",
     size: "",
-    toppping1: false,
-    toppping2: false,
-    toppping3: false,
-    toppping4: false,
+    topping1: false,
+    topping2: false,
+    topping3: false,
+    topping4: false,
+    special: "",
+  });
+  const [disabled, setDisabled] = useState(true);
+  const [errors, setErrors] = useState({
+    name: "",
+    size: "",
+    topping1: "",
+    topping2: "",
+    topping3: "",
+    topping4: "",
     special: "",
   });
 
@@ -19,7 +30,7 @@ function Form(props) {
       .string()
       .required("User is required")
       .min(2, "name must be at least 2 characters"),
-    size: yup.string().required("Size is required"),
+    size: yup.string(),
     toppping1: yup.boolean(),
     toppping2: yup.boolean(),
     toppping3: yup.boolean(),
@@ -27,28 +38,62 @@ function Form(props) {
     special: yup.string(),
   });
 
-  const Validation = (schema, name) => {
-    yup.reach().validate().then().catch();
+  // const Validation = (schema, name) => {
+  //   yup.reach().validate().then().catch();
+  // };
+
+  // const url = "https://reqres.in/api/orders";
+
+  const setFormErrors = (name, value) => {
+    yup
+      .reach(schema, name)
+      .validate(value)
+      .then(() => setErrors({ ...errors, [name]: "" }))
+      .catch((err) => setErrors({ ...errors, [name]: err.errors[0] }));
   };
 
-  const url = "https://reqres.in/api/orders";
+  const change = (event) => {
+    const { checked, value, name, type } = event.target;
+    const valueToUse = type === "checkbox" ? checked : value;
+    setFormErrors(name, valueToUse);
+    setForm({ ...form, [name]: valueToUse });
+  };
 
-  const [disabled, setDisabled] = useState(true);
+  const submit = (event) => {
+    event.preventDefault();
+    const newOrder = {
+      name: form.name.trim(),
+      size: form.size,
+      topping1: form.topping1,
+      topping2: form.topping2,
+      topping3: form.topping3,
+      topping4: form.topping4,
+      special: form.special.trim(),
+    };
+    axios.post("https://reqres.in/api/orders", newOrder).then((res) => {
+      setForm({
+        name: "",
+        size: "",
+        topping1: false,
+        topping2: false,
+        topping3: false,
+        topping4: false,
+        special: "",
+      }).catch((err) => {
+        debugger;
+      });
+    });
+  };
 
   useEffect(() => {
     schema.isValid(form).then((valid) => setDisabled(!valid));
   }, [form]);
 
-  const change = (event) => {
-    const { checked, value, name, type } = event.target;
-    const valueToUse = type === "checkbox" ? checked : value;
-    setForm({ ...form, [name]: valueToUse });
-  };
-
   return (
     <div>
       <h2>Form</h2>
-      <form id="pizza-form">
+      <div>{errors.name}</div>
+      <form id="pizza-form" onSubmit={submit}>
         <label>
           Name:
           <input
@@ -117,9 +162,9 @@ function Form(props) {
           />
         </label>
         &nbsp;
-        <label>
-          <input type="submit" value="Submit" />
-        </label>
+        <button id="order-button" disabled={disabled}>
+          Submit
+        </button>
       </form>
     </div>
   );
