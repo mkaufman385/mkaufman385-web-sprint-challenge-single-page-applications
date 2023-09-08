@@ -1,4 +1,5 @@
-import { Link, Routes, Route } from "react-router-dom";
+// import { Link, Routes, Route } from "react-router-dom";
+import * as yup from "yup";
 import App from "./App";
 import React, { useState, useEffect } from "react";
 
@@ -12,6 +13,31 @@ function Form(props) {
     toppping4: false,
     special: "",
   });
+
+  const schema = yup.object().shape({
+    name: yup
+      .string()
+      .required("User is required")
+      .min(2, "name must be at least 2 characters"),
+    size: yup.string().required("Size is required"),
+    toppping1: yup.boolean(),
+    toppping2: yup.boolean(),
+    toppping3: yup.boolean(),
+    toppping4: yup.boolean(),
+    special: yup.string(),
+  });
+
+  const Validation = (schema, name) => {
+    yup.reach().validate().then().catch();
+  };
+
+  const url = "https://reqres.in/api/orders";
+
+  const [disabled, setDisabled] = useState(true);
+
+  useEffect(() => {
+    schema.isValid(form).then((valid) => setDisabled(!valid));
+  }, [form]);
 
   const change = (event) => {
     const { checked, value, name, type } = event.target;
