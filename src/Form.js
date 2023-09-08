@@ -70,19 +70,22 @@ function Form(props) {
       topping4: form.topping4,
       special: form.special.trim(),
     };
-    axios.post("https://reqres.in/api/orders", newOrder).then((res) => {
-      setForm({
-        name: "",
-        size: "",
-        topping1: false,
-        topping2: false,
-        topping3: false,
-        topping4: false,
-        special: "",
-      }).catch((err) => {
+    axios
+      .post("https://reqres.in/api/orders", newOrder)
+      .then((res) => {
+        setForm({
+          name: "",
+          size: "",
+          topping1: false,
+          topping2: false,
+          topping3: false,
+          topping4: false,
+          special: "",
+        });
+      })
+      .catch((err) => {
         debugger;
       });
-    });
   };
 
   useEffect(() => {
